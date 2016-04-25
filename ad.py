@@ -29,7 +29,7 @@ def halfsies(left, right):
   return left_part + right_part
 
 
-sponsor_names = ("Squarespace", "Casper", "Mail chimp", "Loot Crate", "Audible.com", "Nature Box", "Harry's", "Seeso", "KIND Snacks", "Slack", "Sabra Hummus")
+sponsor_names = ("Squarespace", "Casper", "Mail chimp", "Loot Crate", "Audible.com", "Nature Box", "Harry's", "Seeso", "KIND Snacks", "Slack", "Sabra Hummus", "Sonos", "Ministry of Supply")
 nouns_file = open('nouns.json').read()
 nouns_data = json.loads(nouns_file)
 
@@ -55,30 +55,6 @@ print " ".join(output)
 
 
 
-
-
-# print content_str
-
-# blob = TextBlob(content_str)
-
-# for word, tag in blob.tags: 
-# 	if tag.startswith('NN'):
-# 		if len(word) > 4 and len(word.synsets) > 0:
-# 			synset = random.choice(word.synsets)
-# 			lemma = random.choice(synset.lemma_names())
-# 			output.append(lemma.replace("_", " "))
-# 		else:
-# 			output.append(word)
-
-# print " ".join(output)
-
-
-
-# for item in content_str.split():
-# 	item = item.strip()
-# 	item = item.replace("*Sponsor*", sponsor)
-# 	item = item.replace("_code_", "BeepBoop")
-# 	print "".join(item)
 
 
 
