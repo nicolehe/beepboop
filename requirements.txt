@@ -1,0 +1,4 @@
+future==0.15.2
+nltk==3.2.1
+textblob==0.11.1
+-e git+https://github.com/aparrish/pytracery.git@a47cfe4c4ebd36f3cc3fbaf603d7e1e8eadcddfb#egg=tracery
