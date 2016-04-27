@@ -12,6 +12,8 @@ topic = "bot"
 url = "http://api.wordnik.com:80/v4/word.json/" + topic + "/examples?includeDuplicates=false&useCanonical=false&skip=0&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5"
 
 
+
+
 def doJSON(file, key, val, moreVal, is_url):
 	if is_url is 'y':
 		raw_data = urllib.urlopen(file).read().decode('utf8')
@@ -40,6 +42,12 @@ def guestGenerator():
 	guest_full_name = " ".join([honorific, first_name, last_name]) + ", " + " ".join([topic, occupation])
 	return honorific, first_name, last_name, occupation, guest_full_name
 
+def nameGenerator():
+	first_name = random.choice(all_first_names)
+	last_name = random.choice(all_last_names)
+	full_name = first_name + " " + last_name
+	return full_name
+
 
 def getRandom(list_name, make_str):
 	sample = random.sample(list_name, 1)
@@ -64,69 +72,27 @@ def getSentiment(list_name):
 	positive = list()
 	negative = list()
 	for item in list_name:
-		if item.sentiment.polarity > 0:
+		if item.sentiment.polarity >= 0:
 			positive.append(item)
 		else:
 			negative.append(item)
 	return positive, negative
 
-all_examples = doJSON(url, 'examples', 'text', 'y', 'y')
-all_first_names = doJSON('first_names.json', "firstNames", '', 'n', 'n')
-all_last_names = doJSON('last_names.json', "lastNames", '', 'n', 'n')
-all_occupations = doJSON('occupations.json', "occupations", '', 'n', 'n')
-all_honorifics = doJSON('honorifics.json', "englishHonorifics", '', 'n', 'n')
-
-g_honorific, g_first_name, g_last_name, g_occupation, g_full_name = guestGenerator()
-
 
 def hostGenerator():
 	host_first_names = ['Ira', 'Sarah', 'PJ', 'Alex', 'Alex', 'Anna', 'Jad', 'Dan', 'Robert', 'Starlee', 'Joe', 'Mike', 'Marc', 'Roman', 'Heben', 'Tracy', 'Brittany', 'Ed', 'Peter']
 	host_last_names = ['Glass', 'Koenig', 'Vogt', 'Blumberg', 'Goldman', 'Sale', 'Abumrad', 'Savage', 'Krulwich', 'Kine', 'Rogan', 'Rowe', 'Mars', 'Nigatu', 'Clayton', 'Luse', 'Levine', "Sagal"]
-
 	first_name = halfsies(''.join(random.sample(host_first_names, 1)), ''.join(random.sample(host_first_names, 1)))
 	last_name = halfsies(''.join(random.sample(host_last_names, 1)), ''.join(random.sample(host_last_names, 1)))
-
 	host_full_name = first_name + " " + last_name
 	return first_name, last_name, host_full_name
-
-h_first_name, h_last_name, h_full_name = hostGenerator()
-
-
-defs_list = list()
-
-for line in open('defs.txt').readlines():
-	line = line.decode('utf8')
-	line = line.strip()
-	line = line.lower()
-	defs_list.append(line)
-
-
-wiki = wikipedia.page("chatterbot")
-wikiblob = TextBlob(wiki.summary)
-nps = wikiblob.noun_phrases
-
-
 
 tal = getHostQuestions('tal.txt', 'Ira', 'Ira Glass')
 RA_Alex = getHostQuestions('replyall.txt', 'ALEX', 'ALEX: ')
 RA_PJ = getHostQuestions('replyall.txt', 'PJ', 'PJ: ')
 RL_Jad = getHostQuestions('radiolab.txt', 'JAD ABUMRAD', 'JAD ABUMRAD: ')
 RL_Robert = getHostQuestions('radiolab.txt', 'ROBERT KRULWICH', 'ROBERT KRULWICH: ')
-
 all_questions = tal + RA_PJ + RA_Alex + RL_Jad + RL_Robert
-
-
-
-
-all_adjs = open('adjectives.txt').read()
-adj_blob = TextBlob(all_adjs)
-
-
-pos_adjs, neg_adjs = getSentiment(adj_blob.sentences)
-
-
-pos_host_questions_list, neg_host_questions_list = getSentiment(all_questions)
-
 
 
 answers_inc_bot_list = list()
@@ -152,6 +118,41 @@ for answer in blob.sentences:
 all_text = answers_inc_bot_list + answers_other_list + all_questions
 
 
+all_examples = doJSON(url, 'examples', 'text', 'y', 'y')
+all_first_names = doJSON('first_names.json', "firstNames", '', 'n', 'n')
+all_last_names = doJSON('last_names.json', "lastNames", '', 'n', 'n')
+all_occupations = doJSON('occupations.json', "occupations", '', 'n', 'n')
+all_honorifics = doJSON('honorifics.json', "englishHonorifics", '', 'n', 'n')
+
+
+pos_host_questions_list, neg_host_questions_list = getSentiment(all_questions)
+#generate guest and host names
+
+g_honorific, g_first_name, g_last_name, g_occupation, g_full_name = guestGenerator()
+h_first_name, h_last_name, h_full_name = hostGenerator()
+
+
+
+
+defs_list = list()
+
+for line in open('defs.txt').readlines():
+	line = line.decode('utf8')
+	line = line.strip()
+	line = line.lower()
+	defs_list.append(line)
+
+
+# wiki = wikipedia.page("chatterbot")
+# wikiblob = TextBlob(wiki.summary)
+# nps = wikiblob.noun_phrases
+
+
+all_adjs = open('adjectives.txt').read()
+adj_blob = TextBlob(all_adjs)
+
+
+pos_adjs, neg_adjs = getSentiment(adj_blob.sentences)
 
 
 markov_a = ' '.join(markov.word_level_generate(all_text, 3, count=4))
@@ -163,14 +164,23 @@ print "This week is episode 1, where we will be covering the " + getRandom(pos_a
 print "I'm happy" + " to announce that our guest this week is " + g_full_name + ". Very excited to have you here.\n"
 print "GUEST: Thank you, I'm glad to be here, " + h_first_name + ". \n"
 print "HOST: So what is a " + topic + "? \n"
-print "GUEST: Well, a " + topic + " is " + random.choice(defs_list) + ", sometimes also described as " + random.choice(defs_list) + ", or a " + getRandom(nps, 'n') + ". Another way to say it: " + getRandom(all_examples, 'n') + "\n"
+print "GUEST: Well, a " + topic + " is " + random.choice(defs_list) + ", sometimes also described as " + random.choice(defs_list) + ", or a " + random.choice(defs_list) + ". Another way to say it: " + getRandom(all_examples, 'n') + "\n"
 print "HOST: Let me ask you, " + str(g_first_name) + ", " + getRandom(article_questions_inc_bot, 'y') + "\n"
 print "GUEST: " + getRandom(answers_inc_bot_list, 'y') + " " + getRandom(answers_other_list, 'y') + "\n"
 print "HOST: I've heard that " + getRandom(all_examples, 'n') + "\n"
 print "GUEST: " + markov_a + '\n'
 print "HOST: Fascinating." + '\n'
-print "GUEST: Some find it " + getRandom(neg_adjs, 'y')
+print "GUEST: Some find it " + getRandom(neg_adjs, 'y') + '\n'
 
+from ad import adGenerator
 
+print adGenerator()
+
+print "\nCREDITS \n"
+print "HOST: Beep Boop is me, " + h_full_name + ". We were produced this week by " + nameGenerator() + " and " + nameGenerator() + "."
+for i in range(4):
+	str = "Our " + random.choice(all_occupations) + " is " + nameGenerator() + ". "
+	print str.strip()
+print "Special thanks to " + nameGenerator() + ". Thanks for listening, and see you next week."
 
 

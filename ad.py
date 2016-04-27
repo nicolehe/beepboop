@@ -37,18 +37,19 @@ nouns_list = nouns_data['nouns']
 
 
 sponsor = halfsies(random.choice(nouns_list).title(), random.choice(sponsor_names))
-print "Sponsor: " + sponsor
+
 
 content_str = str(content)
 
 output = list()
 nouns = list()
 
-for item in content_str.split():
-	item = item.replace("*Sponsor*", sponsor)
-	item = item.replace("_code_", "BeepBoop")
-	output.append(item)
-print " ".join(output)
+def adGenerator():
+  for item in content_str.split():
+  	item = item.replace("*Sponsor*", sponsor)
+  	item = item.replace("_code_", "BeepBoop")
+  	output.append(item)
+  return " ".join(output)
 
 
 
