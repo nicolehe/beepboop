@@ -4,10 +4,12 @@ import urllib
 import random
 import markov
 import json
-import wikipedia
+# import wikipedia
+import sys
 
 
-topic = "bot"
+episode = sys.argv[1]
+topic = sys.argv[2]
 
 url = "http://api.wordnik.com:80/v4/word.json/" + topic + "/examples?includeDuplicates=false&useCanonical=false&skip=0&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5"
 
@@ -157,11 +159,11 @@ pos_adjs, neg_adjs = getSentiment(adj_blob.sentences)
 markov_a = ' '.join(markov.word_level_generate(all_text, 2, count=3))
 markov_b = ' '.join(markov.word_level_generate(all_text, 2, count=3))
 
-print "BEEP BOOP EPISODE 1: " + Word(topic).pluralize().upper()
+print "BEEP BOOP EPISODE " + episode + ": " + Word(topic).pluralize().upper()
 print "\n--------------- \n"
 print h_full_name.upper() + ": Welcome to Beep Boop, a computer generated podcast. I'm your host, " + h_full_name + "."
 print "Every week we will bring in a guest to discuss one " + getRandom(pos_adjs, 'y').replace(".", "") + ", " + getRandom(pos_adjs, 'y').replace(".", "") + " topic that everyone is talking about on the internet. We hope that you will find it " + getRandom(pos_adjs, 'y')
-print "This week is episode 1, where we will be covering the " + getRandom(pos_adjs, 'y').replace(".", "") + " but " + getRandom(neg_adjs, 'y').replace(".", "") + " world of " + Word(topic).pluralize() + "."
+print "This week is episode " + episode + ", where we will be covering the " + getRandom(pos_adjs, 'y').replace(".", "") + " but " + getRandom(neg_adjs, 'y').replace(".", "") + " world of " + Word(topic).pluralize() + "."
 print "I'm happy to announce that our guest today is " + g_title + ". Very excited to have you here.\n"
 print g_full_name.upper() + ": Thank you, I'm glad to be here, " + h_first_name + ". \n"
 print h_full_name.upper() + ": So what is a " + topic + "? \n"

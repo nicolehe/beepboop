@@ -6,7 +6,7 @@ import random
 import markov
 import json
 
-ads_file = open('ads.json').read()
+ads_file = open('corpus/ads.json').read()
 ads_data = json.loads(ads_file)
 
 
@@ -30,7 +30,7 @@ def halfsies(left, right):
 
 
 sponsor_names = ("Squarespace", "Casper", "Mail chimp", "Loot Crate", "Audible.com", "Nature Box", "Harry's", "Seeso", "KIND Snacks", "Slack", "Sabra Hummus", "Sonos", "Ministry of Supply")
-nouns_file = open('nouns.json').read()
+nouns_file = open('corpus/nouns.json').read()
 nouns_data = json.loads(nouns_file)
 
 nouns_list = nouns_data['nouns']
