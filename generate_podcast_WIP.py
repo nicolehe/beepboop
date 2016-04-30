@@ -12,10 +12,7 @@ episode = sys.argv[1]
 topic = sys.argv[2]
 
 url = "http://api.wordnik.com:80/v4/word.json/" + topic + "/examples?includeDuplicates=false&useCanonical=false&skip=0&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5"
-
-# wiki = wikipedia.page("chatterbot")
-# wikiblob = TextBlob(wiki.summary)
-# nps = wikiblob.noun_phrases
+url2 = "http://api.wordnik.com:80/v4/word.json/" + topic + "/definitions?includeDuplicates=false&useCanonical=false&skip=0&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5"
 
 
 def doJSON(file, key, val, moreVal, is_url):
@@ -29,8 +26,11 @@ def doJSON(file, key, val, moreVal, is_url):
 		for item in data[key]:
 			words_list.append(item[val])
 		return words_list
-	else:
+	elif moreVal is 'n':
 		return data[key]
+	else:
+		for i in data:
+			return i[key]
 
 def halfsies(left, right):
   left_part = left[:len(left)/2]
@@ -124,6 +124,7 @@ all_text = answers_inc_topic_list + answers_other_list + all_questions
 
 
 all_examples = doJSON(url, 'examples', 'text', 'y', 'y')
+defs_list = doJSON(url2, "text", '', 'm', 'y')
 all_first_names = doJSON('corpus/first_names.json', "firstNames", '', 'n', 'n')
 all_last_names = doJSON('corpus/last_names.json', "lastNames", '', 'n', 'n')
 all_occupations = doJSON('corpus/occupations.json', "occupations", '', 'n', 'n')
@@ -139,13 +140,18 @@ h_first_name, h_last_name, h_full_name = hostGenerator()
 
 
 
-defs_list = list()
+# defs_list = list()
 
-for line in open('corpus/defs.txt').readlines():
-	line = line.decode('utf8')
-	line = line.strip()
-	line = line.lower()
-	defs_list.append(line)
+# for line in open('corpus/defs.txt').readlines():
+# 	line = line.decode('utf8')
+# 	line = line.strip()
+# 	line = line.lower()
+# 	defs_list.append(line)
+
+
+# wiki = wikipedia.page("chatterbot")
+# wikiblob = TextBlob(wiki.summary)
+# nps = wikiblob.noun_phrases
 
 
 all_adjs = open('corpus/adjectives.txt').read()
@@ -158,36 +164,40 @@ pos_adjs, neg_adjs = getSentiment(adj_blob.sentences)
 markov_a = ' '.join(markov.word_level_generate(all_text, 2, count=3))
 markov_b = ' '.join(markov.word_level_generate(all_text, 2, count=3))
 
-print "BEEP BOOP EPISODE " + episode + ": " + Word(topic).pluralize().upper()
-print "\n--------------- \n"
-print "[COMPUTER GENERATED THEME MUSIC]\n"
-print h_full_name.upper() + ": Welcome to Beep Boop, a computer generated podcast. I'm your host, " + h_full_name + "."
-print "Every week we will bring in a guest to discuss one " + getRandom(pos_adjs, 'y').replace(".", "") + ", " + getRandom(pos_adjs, 'y').replace(".", "") + " topic that everyone is talking about on the internet. We hope that you will find it " + getRandom(pos_adjs, 'y')
-print "This week is episode " + episode + ", where we will be covering the " + getRandom(pos_adjs, 'y').replace(".", "") + " but " + getRandom(neg_adjs, 'y').replace(".", "") + " world of " + Word(topic).pluralize() + "."
-print "I'm happy to announce that our guest today is " + g_title + ". Very excited to have you here.\n"
-print g_full_name.upper() + ": Thank you, I'm glad to be here, " + h_first_name + ". \n"
-print h_full_name.upper() + ": So what is a " + topic + "? \n"
-print g_full_name.upper() + ": Well, a " + topic + " is " + random.choice(defs_list) + ", sometimes also described as " + random.choice(defs_list) + ", or a " + random.choice(defs_list) + ". Another way to say it: " + getRandom(all_examples, 'n') + "\n"
-print h_full_name.upper() + ": Let me ask you, " + str(g_first_name) + ", " + getRandom(article_questions_inc_topic_list, 'y') + "\n"
-print g_full_name.upper() + ": " + getRandom(answers_inc_topic_list, 'y').decode('utf8') + " " + getRandom(answers_other_list, 'y').decode('utf8') + "\n"
-print h_full_name.upper() + ": I've heard that " + getRandom(all_examples, 'n') + "\n"
-print g_full_name.upper() + ": " + markov_a + '\n'
-print h_full_name.upper() + ": " + getRandom(pos_host_questions_list, 'y') + '\n'
-print g_full_name.upper() + ": " + markov_b + '\n'
-print h_full_name.upper() + ": Fascinating." + '\n'
-print g_full_name.upper() + ": Some find it " + getRandom(neg_adjs, 'y') + '\n'
-print h_full_name.upper() + ": Well thank you " + str(g_first_name) + " for this " + getRandom(pos_adjs, 'y').replace(".", "") + " interview.\n"
-print g_full_name.upper() + ": Thanks for having me. \n"
+print defs_list
 
-print "[COMPUTER GENERATED THEME MUSIC]\n"
-from ad import adGenerator
+# print "BEEP BOOP EPISODE " + episode + ": " + Word(topic).pluralize().upper()
+# print "\n--------------- \n"
+# print h_full_name.upper() + ": Welcome to Beep Boop, a computer generated podcast. I'm your host, " + h_full_name + "."
+# print "Every week we will bring in a guest to discuss one " + getRandom(pos_adjs, 'y').replace(".", "") + ", " + getRandom(pos_adjs, 'y').replace(".", "") + " topic that everyone is talking about on the internet. We hope that you will find it " + getRandom(pos_adjs, 'y')
+# print "This week is episode " + episode + ", where we will be covering the " + getRandom(pos_adjs, 'y').replace(".", "") + " but " + getRandom(neg_adjs, 'y').replace(".", "") + " world of " + Word(topic).pluralize() + "."
+# print "I'm happy to announce that our guest today is " + g_title + ". Very excited to have you here.\n"
+# print g_full_name.upper() + ": Thank you, I'm glad to be here, " + h_first_name + ". \n"
+# print h_full_name.upper() + ": So what is a " + topic + "? \n"
+# print g_full_name.upper() + ": Well, a " + topic + " is " + random.choice(defs_list) + ", sometimes also described as " + random.choice(defs_list) + ", or a " + random.choice(defs_list) + ". Another way to say it: " + getRandom(all_examples, 'n') + "\n"
+# print h_full_name.upper() + ": Let me ask you, " + str(g_first_name) + ", " + getRandom(article_questions_inc_topic_list, 'y') + "\n"
+# print g_full_name.upper() + ": " + getRandom(answers_inc_topic_list, 'y').decode('utf8') + " " + getRandom(answers_other_list, 'y').decode('utf8') + "\n"
+# print h_full_name.upper() + ": I've heard that " + getRandom(all_examples, 'n') + "\n"
+# print g_full_name.upper() + ": " + markov_a + '\n'
+# print h_full_name.upper() + ": " + getRandom(pos_host_questions_list, 'y') + '\n'
+# print g_full_name.upper() + ": " + markov_b + '\n'
+# print h_full_name.upper() + ": Fascinating." + '\n'
+# print g_full_name.upper() + ": Some find it " + getRandom(neg_adjs, 'y') + '\n'
+# print h_full_name.upper() + ": Well thank you " + str(g_first_name) + " for this " + getRandom(pos_adjs, 'y').replace(".", "") + " interview.\n"
+# print g_full_name.upper() + ": Thanks for having me. \n"
 
-print h_full_name.upper() + ": " + adGenerator()
-print "\n"
-print h_full_name.upper() + ": Beep Boop is hosted by me, " + h_full_name + ". We were produced this week by " + nameGenerator() + " and " + nameGenerator() + "."
-for i in range(4):
-	str = "Our " + random.choice(all_occupations) + " is " + nameGenerator() + ". "
-	print str.strip()
-print "Special thanks to our " + topic + " " + random.choice(all_occupations) + ", " + nameGenerator() + ". Thanks for listening, and see you next week."
+
+# print "\n--------------- \n"
+
+# from ad import adGenerator
+
+# print h_full_name.upper() + ": " + adGenerator()
+
+# print "\n--------------- \n"
+# print h_full_name.upper() + ": Beep Boop is hosted by me, " + h_full_name + ". We were produced this week by " + nameGenerator() + " and " + nameGenerator() + "."
+# for i in range(4):
+# 	str = "Our " + random.choice(all_occupations) + " is " + nameGenerator() + ". "
+# 	print str.strip()
+# print "Special thanks to our " + topic + " " + random.choice(all_occupations) + ", " + nameGenerator() + ". Thanks for listening, and see you next week."
 
 
